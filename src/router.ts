@@ -9,7 +9,11 @@ router.get('/product', (req, res) => {
 router.get('/product/:id', () => {});
 router.put('/product/:id', () => {});
 router.post('/product', () => {});
-router.delete('/product/:id', () => {});
+router.delete('/product/:id', (req, res) => {
+	const id = req.params.id;
+	res.status(200);
+	res.json({ message: `deleting product ${id}` });
+});
 
 router.get('/update', () => {});
 router.get('/update/:id', () => {});
