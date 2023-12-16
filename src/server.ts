@@ -1,6 +1,7 @@
-import express, { NextFunction } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import router from "./router";
 import morgan from "morgan";
+import { protect } from "./modules/auth";
 
 export const app = express();
 
@@ -9,15 +10,14 @@ export const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next) => {
 	req.userName = "james";
 	next();
 });
 
 const nodeDebugger =
 	(kind = "quiet") =>
-	(_req: Express.Request, _res: Express.Response, next: NextFunction) => {
-		console.log(`${kind}: in debugger`);
+	(_req: Request, _res: Response, next: NextFunction) => {
 		next();
 	};
 
@@ -26,4 +26,4 @@ app.get("/", nodeDebugger(), (req, res) => {
 	res.json({ message: "info", userName: req.userName });
 });
 
-app.use("/api", morgan("dev"), nodeDebugger('verbose'), router);
+app.use("/api", protect, morgan("dev"), nodeDebugger("verbose"), router);
