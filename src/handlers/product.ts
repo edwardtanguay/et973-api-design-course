@@ -22,13 +22,30 @@ export const getProducts = async (req: any, res: Response) => {
 };
 
 export const getOneProduct = async (req: any, res: Response) => {
-	const id = req.params.id;
-	const product = await prisma.product.findUnique({
-		where: {
-			id,
-			belongsToId: req.user.id,
-		},
-	});
+	console.log('in getoneproduct');
+	try {
+		const id = req.params.id;
+		const product = await prisma.product.findUnique({
+			where: {
+				id,
+				belongsToId: req.user.id,
+			},
+		});
+
+		console.log('product', product);
+
+
+		if (product) {
+			res.status(200);
+			res.json({ data: product });
+		} else {
+			res.status(400);
+			res.json({ message: "there was an error" });
+		}
+	} catch (e) {
+		res.status(400);
+		res.json({ message: "there was an error" });
+	}
 };
 
 export const createProduct = async (req: any, res: Response) => {
@@ -39,11 +56,11 @@ export const createProduct = async (req: any, res: Response) => {
 				belongsToId: req.user.id,
 			},
 		});
-
+		res.status(200);
 		res.json({ data: product });
 	} catch (e) {
 		res.status(400);
-		res.json({ message: "" + e });
+		res.json({ message: "there was an error" });
 	}
 };
 
