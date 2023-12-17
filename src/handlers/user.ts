@@ -15,23 +15,37 @@ export const createNewUser = async (req: Request, res: Response) => {
 };
 
 export const signin = async (req: Request, res: Response) => {
-	const user = await prisma.user.findUnique({
-		where: {
-			username: req.body.username,
-		},
-	});
-
-	if (user) {
-		const isValid = await comparePasswords(
-			req.body.password,
-			user.password
-		);
-		if (!isValid) {
-			res.status(401);
-			res.json({ message: "no access" });
+	try {
+		const user = await prisma.user.findUnique({
+			where: {
+				username: req.body.username,
+			},
+		});
+		console.log("user", user);
+		if (req.body.password) {
+			if (user) {
+				const isValid = await comparePasswords(
+					req.body.password,
+					user.password
+				);
+				if (!isValid) {
+					res.status(401);
+					res.json({ message: "bad password" });
+				} else {
+					const token = createJWT(user);
+					res.status(200);
+					res.json({ token });
+				}
+			} else {
+				res.status(401);
+				res.json({ message: "bad user" });
+			}
 		} else {
-			const token = createJWT(user);
-			res.json({ token });
+			res.status(401);
+			res.json({ message: "no password sent" });
 		}
+	} catch (e) {
+		res.status(401);
+		res.json({ message: "" + e });
 	}
 };
