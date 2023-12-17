@@ -24,7 +24,6 @@ export const protect = (req: any, res: any, next: any) => {
 		res.json({ message: "no token, not authorized" });
 	} else {
 		const [, token] = bearer.split(" ");
-		console.log(bearer);
 		if (!token) {
 			res.json({ message: "not valid bearer" });
 		} else {
@@ -36,7 +35,6 @@ export const protect = (req: any, res: any, next: any) => {
 				req.user = user;
 				next();
 			} catch (e) {
-				console.log(e);
 				res.status(401);
 				res.json({ message: "invalid token" });
 			}
