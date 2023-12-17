@@ -10,5 +10,6 @@
 	},
 	"files": [
 		"custom.request.d.ts"
-	]
+	],
+	"include": ["src/**/*.ts"]
 }
