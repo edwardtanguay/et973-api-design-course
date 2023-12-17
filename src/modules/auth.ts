@@ -9,7 +9,7 @@ export const createJWT = (user) => {
 	return token;
 };
 
-const comparePasswords = (password: string, hash: string) => {
+export const comparePasswords = (password: string, hash: string) => {
 	return bcrypt.compare(password, hash);
 }
 
