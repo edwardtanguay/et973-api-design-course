@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { body, oneOf, validationResult } from "express-validator";
 import { handleInputErrors } from "./modules/middleware";
-import { createProduct, getOneProduct, getProducts } from "./handlers/product";
+import { createProduct, deleteProduct, getOneProduct, getProducts } from "./handlers/product";
 
 const router = Router();
 
@@ -20,11 +20,7 @@ router.put(
 	}
 );
 router.post("/product", body('name').isString(), handleInputErrors, createProduct);
-router.delete("/product/:id", (req, res) => {
-	const id = req.params.id;
-	res.status(200);
-	res.json({ message: `deleting product ${id}` });
-});
+router.delete("/product/:id", deleteProduct);
 
 router.get("/update", () => {});
 router.get("/update/:id", () => {});

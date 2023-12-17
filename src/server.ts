@@ -3,7 +3,7 @@ import router from "./router";
 import morgan from "morgan";
 import { protect } from "./modules/auth";
 import { createNewUser, signin } from "./handlers/user";
-import cors from 'cors';
+import cors from "cors";
 
 export const app = express();
 
@@ -30,5 +30,29 @@ app.get("/", nodeDebugger(), (req, res) => {
 
 app.use("/api", protect, morgan("dev"), nodeDebugger("verbose"), router);
 
-app.post('/user', createNewUser);
-app.post('/signin', signin);
+app.post("/user", createNewUser);
+app.post("/signin", signin);
+
+// Express catches synchronous errors
+app.get("/test001", (req, res) => {
+	throw new Error("test001");
+});
+
+// but asynchronous errors crash Express
+app.get("/test002", (req, res) => {
+	setTimeout(() => {
+		throw new Error("test002");
+	});
+});
+
+// but asynchronous errors crash Express
+app.get("/test003", (req, res, next) => {
+	setTimeout(() => {
+		next(new Error("test003"));
+	});
+});
+
+// override Express error handling
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+	res.json({ message: 'override of Express error handling' });
+});
